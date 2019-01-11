@@ -56,6 +56,7 @@ function createCard($acesstoken, $pipe_id, $phase_id, $data){
                         {field_id: "employers_zip_code", field_value: "'.$data['employers_zip_code'].'"}
                         {field_id: "years_at_current_job", field_value: "'.$data['years_at_current_job'].'"}
                         {field_id: "referral_partner_email", field_value: "'.$referral_partner_email.'"}
+                        {field_id: "partner_everflow_transaction_id", field_value: "'.$data['transaction_id'].'"}
                     ]
                     parent_ids: ["'.$phase_id.'"]
                 }

@@ -88,6 +88,16 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
 function initApplicationPage(){
     if($('#birthday').length != 0){
         $('#birthday').datepicker({
@@ -467,6 +477,8 @@ function initApplicationPage(){
             need_referral_info = 1;
         }
 
+        var transaction_id = getParameterByName('sub1');
+
         $.ajax({
             url:'server/create_pipefy.php',
             type: 'post',
@@ -501,7 +513,8 @@ function initApplicationPage(){
                 years_at_current_job: $('#years_at_current_job').val(),
                 social_security_number: $('#social_security_number').val(),
                 referral_partner_email: $('#referral_partner_email').val(),
-                need_referral_info: need_referral_info
+                need_referral_info: need_referral_info,
+                transaction_id: transaction_id
             },
             success: function(response){
                 console.log(response);
@@ -520,6 +533,21 @@ function initApplicationPage(){
                 setTimeout(function(){alert('Failed');}, 100);
             }
         });
+
+        if(transaction_id != null){
+            $.ajax({
+                url: 'server/tapptrk.php',
+                type: 'post',
+                data: {
+                    transaction_id: transaction_id
+                },
+                success: function(response){
+                    console.log('response', response);
+                }
+
+            })
+        }
+        
     })
 }
 
@@ -559,14 +587,34 @@ function initHomePage(){
         location.href = 'application.html';
     })
 
-    $(document).on('click', '#home_loan_purpose_select .select-items > div', function(){
-        if($('#home_loan_purpose').val() == 'Debt Consolidation'){
-            $('#home_loan_purpose').parents('.main-form-container').addClass('debt-consolidation');
+    // $(document).on('click', '#home_loan_purpose_select .select-items > div', function(){
+    //     if($('#home_loan_purpose').val() == 'Debt Consolidation'){
+    //         $('#home_loan_purpose').parents('.main-form-container').addClass('debt-consolidation');
+    //     }
+    //     else{
+    //         $('#home_loan_purpose').parents('.main-form-container').removeClass('debt-consolidation');
+    //     }
+    // })
+
+
+    // When the user scrolls the page, execute myFunction 
+    window.onscroll = function() {myFunction()};
+
+    // Get the header
+    var header = document.getElementById("sticky_header");
+
+    // Get the offset position of the navbar
+    var sticky = header.offsetTop;
+
+    myFunction();
+    // Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function myFunction() {
+        if (window.pageYOffset > sticky) {
+            header.classList.add("sticky");
+        } else {
+            header.classList.remove("sticky");
         }
-        else{
-            $('#home_loan_purpose').parents('.main-form-container').removeClass('debt-consolidation');
-        }
-    })
+    }
 }
 
 $(document).ready(function(){

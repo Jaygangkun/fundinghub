@@ -358,6 +358,14 @@ p{
     background-color: #eeeeee;
 }
 
+.section-start .section-bottom.sticky{
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    z-index: 100;
+}
+
 .section-start .section-bottom .section-bottom-wraper{
     padding: 10px;
     display: flex;
